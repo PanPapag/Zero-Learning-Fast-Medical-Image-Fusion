@@ -8,3 +8,18 @@ In clinical applications, such as image-guided surgery and noninvasive diagnosis
 ![](https://github.com/PanPapag/Zero-Learning-Fast-Medical-Image-Fusion/blob/master/images/MRI-SPECT/mr.png) ![](https://github.com/PanPapag/Zero-Learning-Fast-Medical-Image-Fusion/blob/master/images/MRI-SPECT/tc.png) ![](https://github.com/PanPapag/Zero-Learning-Fast-Medical-Image-Fusion/blob/master/results/MRI-SPECT/fusion_mr_tc.png)
 
 ## Requirements
+1. Python 3+
+2. pip
+
+## How to use?
+1. Open the terminal
+2. Type ```git clone https://github.com/PanPapag/Zero-Learning-Fast-Medical-Image-Fusion.gitt``` 
+   to clone the repository to your local machine
+3. Type ```pip install -r requirements.txt```
+3. Type ```python src/main.py --help ``` to view possible options
+4. Type ```python src/main.py ``` to run the app
+
+## License
+This project is licensed under the MIT License.
+
+MIT © [PanPapag]()
