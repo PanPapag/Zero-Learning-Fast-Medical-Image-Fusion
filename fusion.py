@@ -69,6 +69,7 @@ class Fusion:
         Perform fusion algorithm
         """
         with torch.no_grad():
+
             imgs_sum_maps = [-1 for tensor_img in self.images_to_tensors]
             for idx, tensor_img in enumerate(self.images_to_tensors):
                 imgs_sum_maps[idx] = []
@@ -76,6 +77,7 @@ class Fusion:
                 for feature_map in feature_maps:
                     sum_map = torch.sum(feature_map, dim=1, keepdim=True)
                     imgs_sum_maps[idx].append(sum_map)
+
             max_fusion = None
             for sum_maps in zip(*imgs_sum_maps):
                 features = torch.cat(sum_maps, dim=1)
@@ -148,11 +150,3 @@ class Fusion:
                 self.images_to_tensors.append(torch.from_numpy(np_input).cuda())
             else:
                 self.images_to_tensors.append(torch.from_numpy(np_input))
-
-
-if __name__ == '__main__':
-    img1 = cv2.imread('images/MRI-SPECT/mr.png')
-    img2 = cv2.imread('images/MRI-SPECT/tc.png')
-    FU = Fusion([img1, img2])
-    fusion_img = FU.fuse()
-    cv2.imwrite("img.png", fusion_img)
