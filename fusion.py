@@ -1,11 +1,29 @@
 import cv2
 import numpy as np
-import torch
 
+import torch
+import torch.nn as nn
 from torchvision.models.vgg import vgg19
 
+class VGG19(torch.nn.Module):
+    def __init__(self, device='cpu'):
+        super(VGG19, self).__init__()
+        features = list(vgg19(pretrained=True).features)
+        if device == "cuda":
+            self.features = nn.ModuleList(features).cuda().eval()
+        else:
+            self.features = nn.ModuleList(features).eval()
+
+    def forward(self, x):
+        feature_maps = []
+        for layer in self.features:
+            x = layer(x)
+            if isinstance(layer, nn.modules.ReLU):
+                feature_maps.append(x)
+        return feature_maps
+
 class Fusion:
-    def __init__(self, input, model=None):
+    def __init__(self, input):
         """
         Class Fusion constructor
 
@@ -15,18 +33,8 @@ class Fusion:
             self.device: either 'cuda' or 'cpu'
         """
         self.input_images = input
-        self.model = vgg19(True) if model is None else model
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        if self.device == "cuda":
-            self.model.cuda().eval()
-        elif self.device == "cpu":
-            self.model.eval()
-        self.conv2d_layers = [
-            p for _, p in self.model.features._modules.items()
-            if isinstance(p, torch.nn.modules.conv.Conv2d)]
-        self.relu_layers = [
-            p for _, p in self.model.features._modules.items()
-            if isinstance(p, torch.nn.modules.ReLU)]
+        self.model = VGG19(self.device)
 
     def fuse(self):
         """
@@ -40,21 +48,34 @@ class Fusion:
         # Transfer all images to PyTorch tensors
         self._tranfer_to_tensor()
         # Perform fuse strategy
-        output = self._fuse()
+        self._fuse()
+
 
     def _fuse(self):
         with torch.no_grad():
-            pass
+            imgs_to_sum_maps = {}
+            for tensor_img in self.images_to_tensors:
+                imgs_to_sum_maps[tensor_img] = []
+                feature_maps = self.model(tensor_img)
+                for feature_map in feature_maps:
+                    sum_map = torch.sum(feature_map, dim=1, keepdim=True)
+                    imgs_to_sum_maps[tensor_img].append(sum_map)
 
-    def _RGB_to_YCbCr(self, img_rgb):
+
+
+    def _RGB_to_YCbCr(self, img_RGB):
         """
         A private method which converts an RGB image to YCrCb format
         """
-        cv2.normalize(img_rgb, img_rgb, 0, 255, cv2.NORM_MINMAX)
-        return cv2.cvtColor(img_rgb, cv2.COLOR_RGB2YCrCb)[:, :, 0]
+        img_RGB = img_RGB.astype(np.float32) / 255.
+        return cv2.cvtColor(img_RGB, cv2.COLOR_RGB2YCrCb)[:, :, 0]
 
-    def _YCbCr_to_RGB(self):
-        pass
+    def _YCbCr_to_RGB(self, img_YCbCr):
+        """
+        A private method which converts a YCrCb image to RGB format
+        """
+        img_YCbCr = img_YCbCr.astype(np.float32)
+        return cv2.cvtColor(img_YCbCr, cv2.COLOR_YCrCb2RGB)
 
     def _tranfer_to_tensor(self):
         """
