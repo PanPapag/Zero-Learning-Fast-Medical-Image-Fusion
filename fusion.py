@@ -98,8 +98,6 @@ class Fusion:
                 output = np.transpose(output, (1, 2, 0))
             return output
 
-
-
     def _RGB_to_YCbCr(self, img_RGB):
         """
         A private method which converts an RGB image to YCrCb format
