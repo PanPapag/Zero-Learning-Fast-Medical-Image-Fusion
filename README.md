@@ -16,8 +16,9 @@ In clinical applications, such as image-guided surgery and noninvasive diagnosis
 2. Type ```git clone https://github.com/PanPapag/Zero-Learning-Fast-Medical-Image-Fusion.gitt``` 
    to clone the repository to your local machine
 3. Type ```pip install -r requirements.txt```
-3. Type ```python src/main.py --help ``` to view possible options
-4. Type ```python src/main.py ``` to run the app
+4. Type ```cd src```
+5. Type ```python main.py --help ``` to view possible options
+6. Type ```python main.py ``` to run the app
 
 ## License
 This project is licensed under the MIT License.
