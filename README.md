@@ -13,7 +13,7 @@ In clinical applications, such as image-guided surgery and noninvasive diagnosis
 
 ## How to use?
 1. Open the terminal
-2. Type ```git clone https://github.com/PanPapag/Zero-Learning-Fast-Medical-Image-Fusion.gitt``` 
+2. Type ```git clone https://github.com/PanPapag/Zero-Learning-Fast-Medical-Image-Fusion.git``` 
    to clone the repository to your local machine
 3. Type ```pip install -r requirements.txt```
 4. Type ```python main.py --help ``` to view possible options
